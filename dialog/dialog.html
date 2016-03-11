@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> 
+	<title></title>
+	<link rel="stylesheet" href="css/dialog.css">
+</head>
+<body>
+	<div class="click">按钮弹框</div>
+	<div class="click2">无按钮弹框</div>
+	<div class="click3">关闭icon弹框</div>
+	<div class="click4">关闭icon不是背景图弹框</div>
+	<script src="js/require.js"></script>
+    <script>
+    require(['js/dialog'], function (Dialog){
+    	//带有按钮弹框
+    	var dialog=new Dialog({clickClass:"click",sure:"true",cancel:"true",title:"按钮弹框",content:"按钮内容",sureText:"确定",cancelText:"取消",width:"200",height:"100"});
+    	//无按钮弹框
+    	var dialog=new Dialog({clickClass:"click2",content:"无按钮弹框"});
+    	//带有关闭icon弹框
+    	var dialog=new Dialog({clickClass:"click3",sure:"true",title:"按钮弹框",content:"按钮内容",sureText:"确定",width:"200",height:"100",closeIcon:"true",closeIconBg:"url(img/close_icon.png) no-repeat 0 0"});
+    	//带有关闭icon弹框
+    	var dialog=new Dialog({clickClass:"click4",sure:"true",title:"按钮弹框",content:"按钮内容",sureText:"确定",width:"200",height:"100",closeIcon:"true"});
+    });
+    
+    </script>
+
+</body>
+</html>
