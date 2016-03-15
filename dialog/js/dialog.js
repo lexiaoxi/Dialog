@@ -14,7 +14,8 @@
         dialogBox,
         dialogTitle,
         dialogContent,
-        dialogBtnBox;
+        dialogBtnBox,
+        popup;
 
     //    方法
     function Dialog(options){
@@ -26,12 +27,13 @@
             timeout: 2000,//默认延时
             title:"",//弹出框标题
             content:"",//弹出框内容
-            cancel:"",//是否有取消按钮 true/false
-            sure:"",//是否有确定按钮 true/false
+            cancel:false,//是否有取消按钮 true/false
+            sure:false,//是否有确定按钮 true/false
             cancelText:"取消",//默认按钮文字
             sureText:"确定",//默认按钮文字
-            closeIcon:"",//是否有关闭icon true/false
-            closeIconBg:""//icon的背景
+            closeIcon:false,//是否有关闭icon true/false
+            closeIconBg:"",//icon的背景
+            popup:false//是否需要遮罩 true/false
         };
         for (var prop in options) {
             if (options.hasOwnProperty(prop)) {
@@ -41,7 +43,7 @@
         this.settings = defaults; 
         this.init();  
     };
-    //单列模式添加链接div容器
+    //单列模式添加弹出框div容器
     var createBox=function(){
         div=document.createElement("div");
         return div;
@@ -64,13 +66,15 @@
             var that=this;
             document.addEventListener("click",function(){
                 if(event.target.className==that.settings.clickClass){
-                    that.create(that.closeIcon,that.disappear);
+                    that.create(that.closeIcon,that.disappear,that.popup);
                 }
             },false);
-            this.close();
+            if(this.settings.closeIcon==true||this.settings.cancel==true||this.settings.sure==true){
+                this.close();
+            }
         },
         //dialog Dom生成
-        create:function(callback,callback2){
+        create:function(callback,callback2,callback3){
             dialogBox=createSingleBox();
             if(this.settings.title!=""){
                 dialogTitle='<div class="ui-dialog-title">'+this.settings.title+'</div>';  
@@ -82,11 +86,11 @@
             }else{
                 dialogContent="";    
             }
-            if(this.settings.cancel=="true"&&this.settings.sure=="true"){
+            if(this.settings.cancel==true&&this.settings.sure==true){
                 dialogBtnBox='<div class="ui-dialog-btn"><input type="button" value="'+this.settings.cancelText+'"><input type="button" value="'+this.settings.sureText+'"></div>';
-            }else if(this.settings.sure=="true"&&this.settings.cancel!="true"){
+            }else if(this.settings.sure==true&&this.settings.cancel!=true){
                 dialogBtnBox='<div class="ui-dialog-btn"><input type="button" value="'+this.settings.sureText+'"></div>';
-            }else if(this.settings.sure!="true"&&this.settings.cancel=="true"){
+            }else if(this.settings.sure!=true&&this.settings.cancel==true){
                 dialogBtnBox='<div class="ui-dialog-btn"><input type="button" value="'+this.settings.cancelText+'"></div>';    
             }else{
                 dialogBtnBox="";
@@ -94,11 +98,8 @@
             if(this.settings.title!=""||this.settings.content!=""){
                 dialogBox.innerHTML=dialogTitle+dialogContent+dialogBtnBox;
             }
-            if (typeof callback === 'function'&&this.settings.closeIcon=="true"){
+            if (typeof callback === 'function'&&this.settings.closeIcon==true){
                 callback.call(this);
-            }
-            if (typeof callback === 'function'&&this.settings.closeIcon!="true"&&this.settings.cancel!="true"&&this.settings.sure!="true"){
-                callback2.call(this);
             }
             div.className=this.settings.dialogClass;
             if(this.settings.height>=0){
@@ -112,8 +113,16 @@
                 div.style.width=this.settings.width;
             }
             document.body.appendChild(div);
+            //在弹框添加进dom中再执行遮罩生成
+            if(typeof callback3 === 'function'&&this.settings.popup==true){
+                callback3.call(this);  
+            }
+            //在弹框添加进dom中再执行自动隐藏
+            if (typeof callback2 === 'function'&&this.settings.closeIcon!=true&&this.settings.cancel!=true&&this.settings.sure!=true){
+                callback2.call(this);
+            }
         },
-        //关闭icon
+        //关闭icon生成
         closeIcon:function(){
             var icon=document.createElement("span");
             icon.className="ui-dialog-close";
@@ -124,21 +133,35 @@
             }
             dialogBox.appendChild(icon);
         },
-        //弹框自动关闭
+        //弹框自动关闭、遮罩移除
         disappear:function(){
+            var that=this;
             setTimeout(function(){
                 dialogBox.remove();
-            }, this.settings.timeout);        
+                if(that.settings.popup==true){
+                    popup.remove();
+                }
+            }, this.settings.timeout);      
         },
-        //点击关闭弹框
+        //点击关闭弹框、遮罩移除
         close:function(){
+            var that=this;
             document.addEventListener("click",function(){
                 if(event.target.className=="ui-dialog-close"||event.target.parentNode.className=="ui-dialog-btn"){
                     dialogBox.remove();
+                    if(that.settings.popup==true){
+                        popup.remove();
+                    }
                 }
             },false)    
+        },
+        //弹框遮罩生成
+        popup:function(){
+            popup=document.createElement("div");
+            popup.className="ui-popup";
+            document.body.insertBefore(popup,div);
         }
     }
-    //    暴露公共方法
+    //暴露公共方法
     return Dialog;
 }));
