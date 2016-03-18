@@ -63,16 +63,8 @@
         },
         //事件绑定
         bindEvent:function(){
-            var that=this;
-            /*document.addEventListener("click",function(){
-                if(event.target.className==that.settings.clickClass){
-                    that.create(that.closeIcon,that.disappear,that.popup);
-                    if(that.settings.closeIcon==true||that.settings.cancel==true||that.settings.sure==true){
-                        that.close();
-                    }
-                }
-            },false);*/
-            var clickDom=this.settings.clickClass;
+            var that=this,
+                clickDom=this.settings.clickClass;
             document.querySelector("."+clickDom).onclick=function(){
                 that.create(that.closeIcon,that.disappear,that.popup);
                 if(that.settings.closeIcon==true||that.settings.cancel==true||that.settings.sure==true){
