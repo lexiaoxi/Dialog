@@ -64,13 +64,20 @@
         //事件绑定
         bindEvent:function(){
             var that=this;
-            document.addEventListener("click",function(){
+            /*document.addEventListener("click",function(){
                 if(event.target.className==that.settings.clickClass){
                     that.create(that.closeIcon,that.disappear,that.popup);
+                    if(that.settings.closeIcon==true||that.settings.cancel==true||that.settings.sure==true){
+                        that.close();
+                    }
                 }
-            },false);
-            if(this.settings.closeIcon==true||this.settings.cancel==true||this.settings.sure==true){
-                this.close();
+            },false);*/
+            var clickDom=this.settings.clickClass;
+            document.querySelector("."+clickDom).onclick=function(){
+                that.create(that.closeIcon,that.disappear,that.popup);
+                if(that.settings.closeIcon==true||that.settings.cancel==true||that.settings.sure==true){
+                    that.close();
+                }
             }
         },
         //dialog Dom生成
@@ -138,7 +145,7 @@
             var that=this;
             setTimeout(function(){
                 dialogBox.remove();
-                if(that.settings.popup==true){
+                if(popup){
                     popup.remove();
                 }
             }, this.settings.timeout);      
@@ -149,7 +156,7 @@
             document.addEventListener("click",function(){
                 if(event.target.className=="ui-dialog-close"||event.target.parentNode.className=="ui-dialog-btn"){
                     dialogBox.remove();
-                    if(that.settings.popup==true){
+                    if(popup){
                         popup.remove();
                     }
                 }
