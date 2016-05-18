@@ -63,12 +63,24 @@
         },
         //事件绑定
         bindEvent:function(){
-            var that=this,
-                clickDom=this.settings.clickClass;
-            document.querySelector("."+clickDom).onclick=function(){
-                that.create(that.closeIcon,that.disappear,that.popup);
-                if(that.settings.closeIcon==true||that.settings.cancel==true||that.settings.sure==true){
-                    that.close();
+            var that=this;
+            /*document.body.addEventListener("click",function(){
+                if(event.target.className==that.settings.clickClass){
+                    that.create(that.closeIcon,that.disappear,that.popup);
+                    if(that.settings.closeIcon==true||that.settings.cancel==true||that.settings.sure==true){
+                        that.close();
+                    }
+                }
+            },false);*/
+            //解决冒泡引起的点击多次实例化
+            var clickDom=this.settings.clickClass,
+                clickDomList=document.getElementsByClassName(clickDom);
+            for(var i in clickDomList){
+                clickDomList[i].onclick=function(){
+                    that.create(that.closeIcon,that.disappear,that.popup);
+                    if(that.settings.closeIcon==true||that.settings.cancel==true||that.settings.sure==true){
+                        that.close();
+                    }
                 }
             }
         },
